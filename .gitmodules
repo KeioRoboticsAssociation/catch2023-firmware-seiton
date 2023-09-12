@@ -1,0 +1,12 @@
+[submodule "lib/rpico-stepper"]
+	path = lib/rpico-stepper
+	url = git@github.com:hirobon1690/rpico-stepper.git
+[submodule "lib/rpico-pwm"]
+	path = lib/rpico-pwm
+	url = git@github.com:hirobon1690/rpico-pwm.git
+[submodule "lib/rpico-gpio"]
+	path = lib/rpico-gpio
+	url = git@github.com:hirobon1690/rpico-gpio.git
+[submodule "lib/rpico-servo"]
+	path = lib/rpico-servo
+	url = git@github.com:hirobon1690/rpico-servo.git
