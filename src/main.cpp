@@ -7,8 +7,9 @@
 #include "servo.h"
 #include "stepper.h"
 
-const int UP_POS = 115;
-const int DOWN_POS = 146;
+const int UP_POS = 148;
+const int DOWN_POS = 179;
+const int WAIT_POS = 113;
 const int STP_POS_1 = 240;
 
 Servo servo(21);
@@ -205,7 +206,7 @@ int main(void) {
                         break;
                     }
                 }
-                for (int i = UP_POS; i > 85; i--) {
+                for (int i = UP_POS; i > WAIT_POS; i--) {
                     servo.write(i);
                     sleep_ms(25);
                 }
