@@ -7,9 +7,9 @@
 #include "servo.h"
 #include "stepper.h"
 
-const int UP_POS = 148;
-const int DOWN_POS = 179;
-const int WAIT_POS = 113;
+const int UP_POS = 78;
+const int DOWN_POS = 47;
+const int WAIT_POS = 108;
 const int STP_POS_1 = 240;
 
 Servo servo(21);
@@ -23,14 +23,14 @@ int current, next;
 bool flag;
 
 void up() {
-    for (int i = DOWN_POS; i > UP_POS; i--) {
+    for (int i = DOWN_POS; i < UP_POS; i++) {
         servo.write(i);
         sleep_ms(25);
     }
 }
 
 void down() {
-    for (int i = UP_POS; i < DOWN_POS; i++) {
+    for (int i = UP_POS; i > DOWN_POS; i--) {
         servo.write(i);
         sleep_ms(25);
     }
@@ -38,12 +38,12 @@ void down() {
 }
 
 void yurayura() {
-    for (int i = DOWN_POS; i > DOWN_POS - 15; i--) {
+    for (int i = DOWN_POS; i < DOWN_POS + 15; i++) {
         servo.write(i);
         sleep_ms(20);
     }
     sleep_ms(50);
-    for (int i = DOWN_POS - 15; i < DOWN_POS; i++) {
+    for (int i = DOWN_POS + 15; i > DOWN_POS; i--) {
         servo.write(i);
         sleep_ms(20);
     }
@@ -206,7 +206,7 @@ int main(void) {
                         break;
                     }
                 }
-                for (int i = UP_POS; i > WAIT_POS; i--) {
+                for (int i = UP_POS; i < WAIT_POS; i++) {
                     servo.write(i);
                     sleep_ms(25);
                 }
@@ -227,7 +227,7 @@ int main(void) {
 
             case 5:
                 printf("guriguri\n");
-                for (int i = DOWN_POS; i > DOWN_POS - 15; i--) {
+                for (int i = DOWN_POS; i < DOWN_POS + 15; i++) {
                     servo.write(i);
                     sleep_ms(20);
                 }
@@ -247,7 +247,7 @@ int main(void) {
                     if (next == 6)
                         break;
                 }
-                for (int i = DOWN_POS - 15; i < DOWN_POS; i++) {
+                for (int i = DOWN_POS + 15; i > DOWN_POS; i--) {
                     servo.write(i);
                     sleep_ms(20);
                 }
