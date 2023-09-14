@@ -8,7 +8,7 @@
 #include "stepper.h"
 
 const int UP_POS = 115;
-const int DOWN_POS = 142;
+const int DOWN_POS = 146;
 const int STP_POS_1 = 240;
 
 Servo servo(21);
@@ -19,6 +19,7 @@ Gpio dir(14, OUTPUT);
 Gpio sw0(22, INPUT_PD);
 Gpio sw1(23, INPUT_PD);
 int current, next;
+bool flag;
 
 void up() {
     for (int i = DOWN_POS; i > UP_POS; i--) {
@@ -35,13 +36,34 @@ void down() {
     servo.write_ms(0);
 }
 
-void step(int num) {
+void yurayura() {
+    for (int i = DOWN_POS; i > DOWN_POS - 15; i--) {
+        servo.write(i);
+        sleep_ms(20);
+    }
+    sleep_ms(50);
+    for (int i = DOWN_POS - 15; i < DOWN_POS; i++) {
+        servo.write(i);
+        sleep_ms(20);
+    }
+}
+
+void step(int num, int delay = 1800) {
     for (int i = 0; i < num; i++) {
         stp.write(1);
         sleep_ms(1);
         stp.write(0);
-        sleep_us(1600);
+        sleep_us(delay);
     }
+}
+
+void guriguri(bool _dir) {
+    dir.write(_dir);
+    step(int(6 * 200.0 / (21 * 3.1415)), 3500);
+    sleep_ms(200);
+    dir.write(!_dir);
+    step(int(6 * 200.0 / (21 * 3.1415)), 3500);
+    sleep_ms(200);
 }
 
 void reset() {
@@ -81,42 +103,55 @@ int main(void) {
     dir.init();
     dir.write(1);
     sw0.init();
-    servo.write(UP_POS);
+
+    while (1) {
+        static char buf[255];
+        int cnt = 0;
+        while (1) {
+            char c = getchar_timeout_us(100000000000);
+            buf[cnt] = c;
+            if (c == '\n') {
+                printf("%s", buf);
+                cnt = 0;
+                // sscanf(buf, "%c\n", &c);
+                // memset(buf, '\0', 255);
+                break;
+            }
+            cnt++;
+        }
+        if (buf[0] == 's') {
+            break;
+        }
+    }
+    up();
 
     while (1) {
         printf("%d\n", sw0.read());
         step(1);
         if (!sw0.read()) {
-            current = 2;
+            current = 3;
             break;
         }
     }
 
-    //  while (1) {
-    //     int cnt = 0;
-    //     static char buf[255];
-    //     while (1) {
-    //         char c = getchar_timeout_us(100000000000);
-    //         buf[cnt] = c;
-    //         if (c == '\n') {
-    //             cnt = 0;
-    //             break;
-    //         }
-    //         if (c == 'r') {
-    //             // reset microcontroller
-    //             reset();
-    //         }
-    //         cnt++;
-    //     }
-    // }
-
-
     multicore_launch_core1(serial_read);
-    next = 2;
+    next = 3;
     while (1) {
+        while (1) {
+            if (current != next) {
+                break;
+            }
+            sleep_ms(10);
+        }
         dir.write((current - next) < 0);
+        slp.write(1);
         switch (next) {
             case 0:
+                if (!flag) {
+                    flag = true;
+                } else {
+                    up();
+                }
                 printf("next -> 0\n");
                 while (1) {
                     step(1);
@@ -125,14 +160,26 @@ int main(void) {
                         break;
                     }
                 }
+                down();
                 break;
             case 1:
+                if (!flag) {
+                    flag = true;
+                } else {
+                    up();
+                }
                 printf("next -> 1\n");
                 step(int(STP_POS_1 * 200.0 / (21 * 3.1415)));
                 current = 1;
+                down();
                 break;
 
             case 2:
+                if (!flag) {
+                    flag = true;
+                } else {
+                    up();
+                }
                 printf("next -> 2\n");
                 while (1) {
                     step(1);
@@ -141,21 +188,75 @@ int main(void) {
                         break;
                     }
                 }
+                down();
+                break;
+
+            case 3:
+                if (!flag) {
+                    flag = true;
+                } else {
+                    up();
+                }
+                printf("next -> 3\n");
+                while (1) {
+                    step(1);
+                    if (!sw0.read()) {
+                        current = 3;
+                        break;
+                    }
+                }
+                for (int i = UP_POS; i > 85; i--) {
+                    servo.write(i);
+                    sleep_ms(25);
+                }
+                while (1) {
+                    sleep_ms(10);
+                }
+                break;
+
+            case 4:
+                printf("yurayura\n");
+                while (1) {
+                    yurayura();
+                    if (next == 7)
+                        break;
+                }
+                next = current;
+                break;
+
+            case 5:
+                printf("guriguri\n");
+                for (int i = DOWN_POS; i > DOWN_POS - 15; i--) {
+                    servo.write(i);
+                    sleep_ms(20);
+                }
+                while (1) {
+                    switch (current) {
+                        case 0:
+                            guriguri(false);
+                            break;
+                        case 1:
+                            guriguri(true);
+                            guriguri(false);
+                            break;
+                        case 2:
+                            guriguri(true);
+                            break;
+                    }
+                    if (next == 6)
+                        break;
+                }
+                for (int i = DOWN_POS - 15; i < DOWN_POS; i++) {
+                    servo.write(i);
+                    sleep_ms(20);
+                }
+                next = current;
                 break;
             default:
                 break;
         }
         slp.write(0);
-        down();
-        servo.write_ms(0);
+        // servo.write_ms(0);
         printf("current: %d\n", current);
-        while (1) {
-            if (current != next) {
-                break;
-            }
-            sleep_ms(10);
-        }        
-        up();
-        slp.write(1);
     }
 }
