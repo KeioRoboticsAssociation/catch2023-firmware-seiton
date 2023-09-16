@@ -273,6 +273,43 @@ int main(void) {
                 }
                 next = current;
                 break;
+
+             case 8:
+                printf("guriguri R\n");
+                for (int i = DOWN_POS; i < DOWN_POS + 15; i++) {
+                    servo.write(i);
+                    sleep_ms(20);
+                }
+                while (1) {
+                    guriguri(true);
+                    if (next == 9)
+                        break;
+                }
+                for (int i = DOWN_POS + 15; i > DOWN_POS; i--) {
+                    servo.write(i);
+                    sleep_ms(20);
+                }
+                next = current;
+                break;
+
+            case 10:
+                printf("guriguri L\n");
+                for (int i = DOWN_POS; i < DOWN_POS + 15; i++) {
+                    servo.write(i);
+                    sleep_ms(20);
+                }
+                while (1) {
+                    guriguri(false);
+                    if (next == 11)
+                        break;
+                }
+                for (int i = DOWN_POS + 15; i > DOWN_POS; i--) {
+                    servo.write(i);
+                    sleep_ms(20);
+                }
+                next = current;
+                break;
+            
             default:
                 break;
         }
