@@ -9,7 +9,7 @@
 
 const int UP_POS = 78;
 const int DOWN_POS = 47;
-const int WAIT_POS = 108;
+const int WAIT_POS = 138;
 const int STP_POS_1 = 240;
 
 Servo servo(21);
@@ -60,10 +60,10 @@ void step(int num, int delay = 1800) {
 
 void guriguri(bool _dir) {
     dir.write(_dir);
-    step(int(6 * 200.0 / (21 * 3.1415)), 3500);
+    step(int(50 * 200.0 / (21 * 3.1415)), 3500);
     sleep_ms(200);
     dir.write(!_dir);
-    step(int(6 * 200.0 / (21 * 3.1415)), 3500);
+    step(int(50 * 200.0 / (21 * 3.1415)), 3500);
     sleep_ms(200);
 }
 
@@ -125,6 +125,10 @@ int main(void) {
         }
     }
     up();
+    for (int i = UP_POS; i < WAIT_POS; i++) {
+        servo.write(i);
+        sleep_ms(25);
+    }
 
     while (1) {
         printf("%d\n", sw0.read());
@@ -149,6 +153,10 @@ int main(void) {
         switch (next) {
             case 0:
                 if (!flag) {
+                    for (int i = WAIT_POS; i > UP_POS; i--) {
+                        servo.write(i);
+                        sleep_ms(25);
+                    }
                     flag = true;
                 } else {
                     up();
@@ -165,6 +173,10 @@ int main(void) {
                 break;
             case 1:
                 if (!flag) {
+                    for (int i = WAIT_POS; i > UP_POS; i--) {
+                        servo.write(i);
+                        sleep_ms(25);
+                    }
                     flag = true;
                 } else {
                     up();
@@ -177,6 +189,10 @@ int main(void) {
 
             case 2:
                 if (!flag) {
+                    for (int i = WAIT_POS; i > UP_POS; i--) {
+                        servo.write(i);
+                        sleep_ms(25);
+                    }
                     flag = true;
                 } else {
                     up();
@@ -194,6 +210,10 @@ int main(void) {
 
             case 3:
                 if (!flag) {
+                    for (int i = WAIT_POS; i > UP_POS; i--) {
+                        servo.write(i);
+                        sleep_ms(25);
+                    }
                     flag = true;
                 } else {
                     up();
@@ -234,14 +254,14 @@ int main(void) {
                 while (1) {
                     switch (current) {
                         case 0:
-                            guriguri(false);
+                            guriguri(true);
                             break;
                         case 1:
                             guriguri(true);
                             guriguri(false);
                             break;
                         case 2:
-                            guriguri(true);
+                            guriguri(false);
                             break;
                     }
                     if (next == 6)
