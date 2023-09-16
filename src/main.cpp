@@ -8,7 +8,7 @@
 #include "stepper.h"
 
 const int UP_POS = 148;
-const int DOWN_POS = 179;
+const int DOWN_POS = 177;
 const int WAIT_POS = 113;
 const int STP_POS_1 = 240;
 
